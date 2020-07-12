@@ -2,10 +2,15 @@ const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 
-module.exports = { 
+const basePath = __dirname
+const distPath = 'dist'
+const indextInput = "./public/index.html"
+
+module.exports = {
+    mode: 'development',
     entry: "./index.js",
     output: {
-        path: path.join(__dirname, "/dist"),
+        path: path.join(basePath, distPath),
         filename: "build.js"
     },
     module: {
@@ -13,11 +18,24 @@ module.exports = {
             {
                 test: /\.(js|jsx)$/,
                 exclude: /node_modules/,
-                use: ["babel-loader"]
+                use: "babel-loader"
             },
             {
-                test: /\.css$/,
-                use: ["style-loader", "css-loader"]
+                test: /\.(css|scss)$/,
+                use:[
+                    {
+                        loader: 'style-loader',
+                    },
+                    {
+                        loader: 'css-loader',
+                    },
+                    {
+                        loader: 'sass-loader',
+                        options: {
+                            sourceMap: true,
+                        },
+                    },
+                ]
             }
         ]
     },
@@ -26,7 +44,7 @@ module.exports = {
     }, 
     plugins: [ 
         new HtmlWebpackPlugin({
-            template: "./public/index.html"
+            template: indextInput
         }),
         new CleanWebpackPlugin()
     ]
